@@ -1,4 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>Test</title><url>https://i.animeii.tech/post/test/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 这里是文章概述。。。</content></entry><entry><title>Hugo建站相关</title><url>https://i.animeii.tech/post/use_hugo_any/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 扩展网站功能，如何添加音乐、评论系统。在使用博客中，不断扩展其内容。自定义一些功能。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>如何使用webhook自动更新远程文件</title><url>https://i.animeii.tech/post/202203/sync_push_by_webhook/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 有这样一个需求：本地编写管理网站文章，怎样自动的部署到远程服务器上呢？webhook可以实现。当我编写完文档后，push到github时，会自动部署到vps上。这样既能满足本地快捷的编写文档，又不受限于开关机状态。
+本文为将博客自动部署到远程vps的实践。
+在github创建代码仓库
+在github上创建一个公共仓库。将博客的public下的文件提交到该仓库
+vps上的准备
+1.生成ssh-key,添加到github
+# 生成公钥 ssh-keygen -C "animeic@163.com" # 查看并添加到GitHub cat .ssh/id_rsa.pub # 验证 ssh -vT git@github.com # 在github添加 2.安装webhook服务。
+apt-get install webhook # 启动服务 webhook -hooks /etc/webhook.yaml # [/etc/webhook.yaml 配置] - id: redeploy-webhook execute-command: "/var/scripts/redeploy.sh" # 执行的脚本 command-working-directory: "/root/i.animeii.tech/static/i.animeii.tech" #需要拉取文件的目录 # 推荐设置system管理，参考如《何创建一个博客网站》中frps的配置方式 # [/var/scripts/redeply.sh 配置] #!/bin/bash git pull git@github.com:animeic/i.animeii.tech.git # 需要注意/root/i.animeii.tech/static/i.animeii.tech 需要git初始化。git init 上面创建的仓库设置webhook
+vps上配置nginx使能被http访问到
+总结：
+1.本地编写文档生成静态文件。git push到代码仓库。
+2.github触发push事件。以post方式请求配置的webhook服务接口。
+3.webhook接口执行服务器上配置的脚本，pull静态文件到具体目录。
+4.配置nginx指向这个目录，使能被web访问。
+于是做到了本地编写、管理网站文档。
+遇到的问题：
+git提交时出现kex_exchange_identification: read: Connection reset by peer
+排查方法ssh -vT git@github.com发现连接github服务器失败。网络原因。</content></entry><entry><title>Hugo建站相关</title><url>https://i.animeii.tech/post/use_hugo_any/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 扩展网站功能，如何添加音乐、评论系统。在使用博客中，不断扩展其内容。自定义一些功能。
 添加评论系统 因为国内网络原因，这里选用utterances作为网站的评论系统。本质上是使用github的issue功能。
 step1：新建public github仓库
 step2：安装utterances
