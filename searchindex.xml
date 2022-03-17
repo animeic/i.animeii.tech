@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>Hugo建站相关</title><url>https://i.animeii.tech/post/use_hugo_any/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 扩展网站功能，如何添加音乐、评论系统。在使用博客中，不断扩展其内容。自定义一些功能。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>Test</title><url>https://i.animeii.tech/post/test/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 这里是文章概述。。。</content></entry><entry><title>Hugo建站相关</title><url>https://i.animeii.tech/post/use_hugo_any/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 扩展网站功能，如何添加音乐、评论系统。在使用博客中，不断扩展其内容。自定义一些功能。
 添加评论系统 因为国内网络原因，这里选用utterances作为网站的评论系统。本质上是使用github的issue功能。
 step1：新建public github仓库
 step2：安装utterances
