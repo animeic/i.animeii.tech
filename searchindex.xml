@@ -7,7 +7,8 @@ vps上的准备
 # 生成公钥 ssh-keygen -C "animeic@163.com" # 查看并添加到GitHub cat .ssh/id_rsa.pub # 验证 ssh -vT git@github.com # 在github添加 2.安装webhook服务。
 apt-get install webhook # 启动服务 webhook -hooks /etc/webhook.yaml # [/etc/webhook.yaml 配置] - id: redeploy-webhook execute-command: "/var/scripts/redeploy.sh" # 执行的脚本 command-working-directory: "/root/i.animeii.tech/static/i.animeii.tech" #需要拉取文件的目录 # 推荐设置system管理，参考如《何创建一个博客网站》中frps的配置方式 # [/var/scripts/redeply.sh 配置] #!/bin/bash git pull git@github.com:animeic/i.animeii.tech.git # 需要注意/root/i.animeii.tech/static/i.animeii.tech 需要git初始化。git init 上面创建的仓库设置webhook
 vps上配置nginx使能被http访问到
-总结：
+因为frp与nginx端口冲突，我使用go的gin框架做了个静态服务。
+├── bootstrap │ └── initGin.go ├── go.mod ├── go.sum ├── main.go ├── middleware │ └── Cors.go ├── router │ └── initRouter.go ├── static └── i.animeii.tech # 网页文件的根目录 # 编译 go build -o web # 后台启动 nohup ./web &amp; 总结：
 1.本地编写文档生成静态文件。git push到代码仓库。
 2.github触发push事件。以post方式请求配置的webhook服务接口。
 3.webhook接口执行服务器上配置的脚本，pull静态文件到具体目录。
