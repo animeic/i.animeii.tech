@@ -16,7 +16,7 @@
 <span>|
 <i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>689 字</span></span>
+<span class=leancloud-world-count>684 字</span></span>
 <span>|
 <i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
@@ -24,7 +24,7 @@
 <span id=/post/202203/sync_push_by_webhook/ class=leancloud_visitors data-flag-title=如何自动更新网站内容>|
 <i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
-<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>有这样一个需求：在本地编写、管理网站文章，怎样自动的部署到远程服务器上？通过webhook可以实现。当我编写完文档后，push到github时，会自动部署到远程服务器上。这样既能满足本地快捷的编写文档，又不受限于本地开关机状态。</p><p>本文为将博客自动部署到远程vps的实践。</p><p><strong>在github创建代码仓库</strong><br>在github上创建一个公共仓库。将博客的public下的文件提交到该仓库</p><p><strong>vps上的准备</strong><br>1.生成ssh-key,添加到github</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#080;font-style:italic># 生成公钥</span>
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>有这样一个需求：在本地编写、管理网站文章，怎样自动的部署到远程服务器上？通过webhook当我编写完文档后，push到github时，会自动部署到远程服务器上。这样既能满足本地快捷的编写文档，又不受限于本地开关机状态。</p><p>本文为将博客自动部署到远程vps的实践。</p><p><strong>在github创建代码仓库</strong><br>在github上创建一个公共仓库。将博客的public下的文件提交到该仓库</p><p><strong>vps上的准备</strong><br>1.生成ssh-key,添加到github</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#080;font-style:italic># 生成公钥</span>
 </span></span><span style=display:flex><span>ssh-keygen -C <span style=color:#b44>&#34;animeic@163.com&#34;</span>
 </span></span><span style=display:flex><span><span style=color:#080;font-style:italic># 查看并添加到GitHub</span>
 </span></span><span style=display:flex><span>cat .ssh/id_rsa.pub 
