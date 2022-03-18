@@ -61,9 +61,9 @@ hugo：用于生成静态页面。
 注册cloudflare，在注册域名平台（如腾讯云）更改为cloudflare域名服务器地址。 在cloudflare上解析域名，建立域名与ip的映射。 在域名注册平台申请免费的ssl证书。 下载nginx部署证书，根据站点命名。如i.animeii.tech.key i.animeic.tech.pem 安装、配置frp
 github上搜索frp。下载对应安装包。 # 分别在本地机器和vps上下载 wget https://github.com/fatedier/frp/releases/download/v0.40.0/frp_0.40.0_linux_386.tar.gz 解压安装包，配置frpc和frps # 分别解压 tar -zxvf frp_0.40.0_linux_386.tar.gz # [vps]配置frps mkdir /etc/frp cp frps.ini /etc/frps.ini cp frps /usr/bin/ cp -r sysytem/frps.service /etc/systemd/system/ # 更改frps.service脚本 vim /etc/systemd/system/frps.service [Service] ... User=root # 防止service方式启动主进程死掉 ... # 设置system启动 systemctl enable frps.service # 管理 systemctl start/stop/status frps.service # 或者 service frps start/stop/status # 配置frps.ini文件 # vim /etc/frp/frps.ini [common] bind_port = 7000 vhost_http_port = 80 vhost_https_port = 443 # 启动frps service frps start # [local] 本机配置frpc，注意frpc.ini是配置重点 # frpc的system管理和frps一致。 # 重点配置 root@animeic-pc:/etc/frp# tree ├── frpc.ini └── ssl ├── i.animeii.tech.key ├── i.animeii.tech.pem └── i.animeii.tech.zip # -----配置frpc.ini----- [common] server_addr = 207.246.100.83 # vps ip地址 server_port = 7000 # 对应vps bind_port # 配置https [https-i.animeii.tech] type = https custom_domains = i.animeii.tech plugin = https2http plugin_local_addr = 127.0.0.1:8081 # 证书配置 plugin_crt_path = /etc/frp/ssl/i.animeii.tech.pem plugin_key_path = /etc/frp/ssl/i.animeii.tech.key plugin_host_header_rewrite = 127.0.0.1 plugin_header_X-From-Where = frp # 配合nginx使用 # /etc/nginx/conf.d/i.animeii.tech.conf server { listen 8081; server_name 127.0.0.1; root /home/animeic/animeii/i.animeii.tech/public; # hugo生成的静态文件路径 location / { index index.html; try_files $uri $uri/ /index.html; } } # 启动frpc和nginx service frpc start nginx -s reload cloudflare cdn加速和开启ssl
 在站点的dns项目下，开启代理小黄云
-​ 在ssl/tls 开启严格加密模式
-​ 在边缘证书下开启http定向的https
-​ 安装hugo
+在ssl/tls 开启严格加密模式
+在边缘证书下开启http定向的https
+安装hugo
 # 1.克隆安装 git clone https://github.com/gohugoio/hugo.git CGO_ENABLED=1 go install --tags extended # sass支持 # 2.编译后的执行文件复制到/usr/bin cd $GOPATH/bin sudo cp hugo /usr/bin/ 创建站点
 hugo new site /animeii.tech/i.animeii.tech # 运行本地服务 hugo server 生成静态文件。nginx配置指向静态文件路径。
 # 创建文档 hugo new post/how_build_website.md # 生成静态html hugo # 会在 i.animeii.tech生成public文件，nginx指向这个路径即可 整个建站流程大致是这样。如果已完成上面的过程，即可通过具体域名，外网访问到本地服务。
