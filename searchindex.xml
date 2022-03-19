@@ -6,7 +6,9 @@
 配置使其与自己创建的对象存储关联。
 # 根据提示配置 s3cmd --configure # 需要填写的是： # access key/secret key/endpoint(ewr1.vultrobjects.com) # dns-style(%(bucket).ewr1.vultrobjects.com) # 以上信息都可以在对象存储实例详情中找到 使用s3cmd
 # 创建bucket s3cmd mb s3://mybucket # 删除bucket s3cmd rb s3://mybucket # 列出bucket s3cmd ls # 列出bucket中的对象 s3cmd ls s3://mybucket # 上传私有文件 s3cmd put photo.jpg s3://mybucket/photo.jpg # 上传公共文件 --recursive s3cmd put -P photo.jpg s3://mybucket/photo.jpg # 下载文件 s3cmd get s3://mybucket/photo.jpg # 删除文件 s3cmd rm s3://mybucket/photo.jpg # 更新文件为公共访问 s3cmd setacl s3://mybucket/photo.jpg --acl-public # 更新文件为私有访问 s3cmd setacl s3://mybucket/photo.jpg --acl-private # 为bucket启用公共目录列表 s3cmd setacl s3://mybucket/ --acl-public # 为bucket启用私有目录列表 s3cmd setacl s3://mybucket/ --acl-private 上传速度
-上传网站图片到对象存储，将图片链接替换成生成的链接。</content></entry><entry><title>如何自动更新网站内容</title><url>https://i.animeii.tech/post/202203/sync_push_by_webhook/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 有这样一个需求：在本地编写、管理网站文章，怎样自动的部署到远程服务器上？通过webhook当我编写完文档后，push到github时，会自动部署到远程服务器上。这样既能满足本地快捷的编写文档，又不受限于本地开关机状态。
+上传网站图片到对象存储，将图片链接替换成生成的链接。
+遇到的问题
+在使用s3cmd命令时大多数出现连接被拒绝。这让我很困扰，我知道是网络原因，但无论我怎么更换各种不同的网络源，始终还是这样。搜索引擎搜索也没有结果。最终解决方法是在配置s3cmd --configure设置http代理。</content></entry><entry><title>如何自动更新网站内容</title><url>https://i.animeii.tech/post/202203/sync_push_by_webhook/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 有这样一个需求：在本地编写、管理网站文章，怎样自动的部署到远程服务器上？通过webhook当我编写完文档后，push到github时，会自动部署到远程服务器上。这样既能满足本地快捷的编写文档，又不受限于本地开关机状态。
 本文为将博客自动部署到远程vps的实践。
 在github创建代码仓库
 在github上创建一个公共仓库。将博客的public下的文件提交到该仓库
