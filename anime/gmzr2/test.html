@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>软件下载</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/common.css">
+
+	<link rel="stylesheet" type="text/css" href="css/video.css">
+</head>
+<body>
+	<script type="text/javascript" src="js/view/head.js"></script>
+
+	<div id="content">
+		<div id="left_video">
+			<video id="p_video" src="" controls width="720" height="420">
+	            您的浏览器不支持 video 标签。//播放失败则显示
+	        </video>
+	        <h3 id="show_video_name"></h3>
+		</div>
+		<div id="right_video">
+			<ul id="v_ul">
+				
+			</ul>
+		</div>
+	</div>
+	<hr class="hr_line">
+	<script type="text/javascript" src="js/view/foot.js"></script>
+	<!-- <script type="text/javascript" src="js/video_data.js"></script> -->
+	<script type="text/javascript">
+
+		vDatas = [{name:"2021-4-28:暖春DVD国语中字", src:"movies/暖春DVD国语中字.mp4"}];
+		
+		var vUl = document.getElementById('v_ul');
+		var pVideo = document.getElementById('p_video');
+		var sVideoName = document.getElementById('show_video_name');
+		pVideo.src = vDatas[0].src;
+		sVideoName.innerHTML = vDatas[0].name;
+		for (var i = 0; i < vDatas.length; i++) {
+			vUl.innerHTML = vUl.innerHTML + '<li class="v_n_li" οnclick="liOnClick(' + i + ')">' + vDatas[i].name + '</li>';
+		}
+		function liOnClick(itemCode) {
+			// body...
+			console.log(itemCode);
+			pVideo.src = vDatas[itemCode].src;
+			sVideoName.innerHTML = vDatas[itemCode].name;
+
+		}
+	</script>
+	
+</body>
+</html>
