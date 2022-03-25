@@ -1,4 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>go中defer的使用</title><url>https://i.animeii.tech/post/go_xxx_defer/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> go中多个defer执行为栈。遵循先进后出原则。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>go中channel的使用</title><url>https://i.animeii.tech/post/go_xxx_channel/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> go中channel的使用规则。
+channel的特性：
+1.给一个nil channel发送数据，造成永远阻塞。
+2.给一个nil channel接收数据，造成永远阻塞。
+3.给一个已经关闭的channel发送数据，引起panic。
+4.从一个已经关闭的channel接收数据，如果缓冲区中为空，则返回一个零值。
+5.无缓冲的channel是同步的，而有缓冲的channel是非同步的。
+package main import( "fmt" "time" ) func main(){ ch := make(chan int,1000) go func(){ for i := 0; i &lt; 10;i++{ ch &lt;- i } }() go func(){ for { a,ok := &lt;-ch if !ok { fmt.Println("close") return } fmt.Println("a: ",a) } }() close(ch) // close fmt.Println("ok") time.Sleep(time.Second * 100) } // painc: send on closed channel</content></entry><entry><title>go中defer的使用</title><url>https://i.animeii.tech/post/go_xxx_defer/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> go中多个defer执行为栈。遵循先进后出原则。
 defer的执行顺序
 多个defer执行顺序为：先进后出的关系。一个函数中，写在前面的defer会与写在后面的defer调用的晚。
 package main import "fmt" func main(){ defer func1() defer func2() defer func3() } func func1(){ fmt.Println("A") } func func2(){ fmt.Println("B") } func func3(){ fmt.Println("C") } // output: // C // B // A defer与return谁先谁后
