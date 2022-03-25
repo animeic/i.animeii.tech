@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>go中defer的使用</title><url>https://i.animeii.tech/post/go_xxx_defer/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> go中多个defer执行为栈。遵循先进后出原则
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>go中defer的使用</title><url>https://i.animeii.tech/post/go_xxx_defer/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> go中多个defer执行为栈。遵循先进后出原则。
 defer的执行顺序
 多个defer执行顺序为：先进后出的关系。一个函数中，写在前面的defer会与写在后面的defer调用的晚。
 package main import "fmt" func main(){ defer func1() defer func2() defer func3() } func func1(){ fmt.Println("A") } func func2(){ fmt.Println("B") } func func3(){ fmt.Println("C") } // output: // C // B // A defer与return谁先谁后
