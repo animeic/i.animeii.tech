@@ -1,4 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>数据定义</title><url>https://i.animeii.tech/post/go_xxx_data_define/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> 函数返回值、结构体比较、string与nil类型、常量。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>切片</title><url>https://i.animeii.tech/post/go_xxx_slice/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> 切片相关
+切片的初始化与追加
+package main import ( "fmt" ) func main(){ s := make([]int,10) s = append(s,1,2,3) fmt.Println(s) } // make初始化为0 // [0 0 0 0 0 0 0 0 0 0 1 2 3] slice拼接问题
+package main import "fmt" func main(){ s1 := []int{1,2,3} s2 := []int{4,5} // s1 = append(s1,s2) // 编译失败 s1 = append(s1,s2...) fmt.Println(s1) } slice中new的使用
+package main import "fmt" func main(){ list := new([]int) list = append(list,1) fmt.Println(list) } // 编译失败 // first argument to append must be slice; have *[]int 切片指针的解引用
+1.使用list := make([]int,0) list类型为切片
+2.使用*list = append(*list,1) list类型为指针
+new和make的区别：
+二者都是内存的分配（堆上），但make只用于slice、map及channel的初始化；而new用于类型的内存分配，并且内置为零。
+make返回的是这几个引用类型本身；而new返回的是指向类型的指针。</content></entry><entry><title>数据定义</title><url>https://i.animeii.tech/post/go_xxx_data_define/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> 函数返回值、结构体比较、string与nil类型、常量。
 函数返回值的问题
 package main func myFunc(x,y int) (sum int,error){ return x+y,nil } func main(){ num,err := myFunc(1,2) fmt.Println("num = ",num) } // 编译报错 // syntax error: mixed named and unnamed function parameters 在函数有多个返回值时，只要有一个返回值有指定命名，其他的也必须有命名。
 结构体比较问题
