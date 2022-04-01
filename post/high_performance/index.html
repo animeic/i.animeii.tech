@@ -14,7 +14,7 @@
 <span>|
 <i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>583 字</span></span>
+<span class=leancloud-world-count>589 字</span></span>
 <span>|
 <i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
@@ -22,7 +22,7 @@
 <span id=/post/high_performance/ class=leancloud_visitors data-flag-title=go语言高性能编程>|
 <i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
-<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>go高性能编程相关。</p><h3 id=字符串拼接性能及原理>字符串拼接性能及原理</h3><p><strong>字符串高校拼接</strong><br>在go语言中，字符串是不可变的，拼接字符串事实上是创建了一个新的字符串对象。如果存在大量的字符串拼接，对性能产生严重的影响。</p><ol><li>常见的拼接方式<br>生成随机字符串</li></ol><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>const</span> letterBytes = <span style=color:#b44>&#34;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#34;</span>
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>go高性能编程相关。</p><h3 id=字符串拼接性能及原理>字符串拼接性能及原理</h3><p><strong>字符串高效拼接</strong><br>在go语言中，字符串是不可变的，拼接字符串事实上是创建了一个新的字符串对象。如果存在大量的字符串拼接，对性能产生严重的影响。</p><p>1.常见的拼接方式<br>生成随机字符串</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>const</span> letterBytes = <span style=color:#b44>&#34;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#34;</span>
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>randomString</span>(n <span style=color:#0b0;font-weight:700>int</span>) <span style=color:#0b0;font-weight:700>string</span>{
 </span></span><span style=display:flex><span>    b <span style=color:#666>:=</span> <span style=color:#a2f>make</span>([]<span style=color:#0b0;font-weight:700>byte</span>,n)
@@ -73,7 +73,7 @@
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f>string</span>(buf)
 </span></span><span style=display:flex><span>}
-</span></span></code></pre></div><ol start=2><li>benchmark性能比较</li></ol><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>benchmark</span>(b <span style=color:#666>*</span>testing.B, f <span style=color:#a2f;font-weight:700>func</span>(<span style=color:#0b0;font-weight:700>int</span>, <span style=color:#0b0;font-weight:700>string</span>)) {
+</span></span></code></pre></div><p>2.benchmark性能比较</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>benchmark</span>(b <span style=color:#666>*</span>testing.B, f <span style=color:#a2f;font-weight:700>func</span>(<span style=color:#0b0;font-weight:700>int</span>, <span style=color:#0b0;font-weight:700>string</span>)) {
 </span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>var</span> str = <span style=color:#00a000>randomString</span>(<span style=color:#666>10</span>)
 </span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>for</span> i <span style=color:#666>:=</span> <span style=color:#666>0</span>; i &lt; b.N; i<span style=color:#666>++</span> {
 </span></span><span style=display:flex><span>        <span style=color:#00a000>f</span>(<span style=color:#666>10000</span>, str)
@@ -96,8 +96,8 @@
 </span></span><span style=display:flex><span>BenchmarkPreByteConcat-8   <span style=color:#666>17379</span>    0.07 ms/op   0.2 MB/op       <span style=color:#666>2</span> allocs/op
 </span></span><span style=display:flex><span>PASS
 </span></span><span style=display:flex><span>ok      example 8.627s
-</span></span></code></pre></div><ol start=3><li>建议<br>综合易用性和性能，推荐使用<code>strings.Builder</code>来拼接字符串。
-<code>strings.Builder</code> 预分配内存的方式：</li></ol><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>builderConcat</span>(n <span style=color:#0b0;font-weight:700>int</span>, str <span style=color:#0b0;font-weight:700>string</span>) <span style=color:#0b0;font-weight:700>string</span> {
+</span></span></code></pre></div><p>3.建议<br>综合易用性和性能，推荐使用<code>strings.Builder</code>来拼接字符串。
+<code>strings.Builder</code> 预分配内存的方式：</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>builderConcat</span>(n <span style=color:#0b0;font-weight:700>int</span>, str <span style=color:#0b0;font-weight:700>string</span>) <span style=color:#0b0;font-weight:700>string</span> {
 </span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>var</span> builder strings.Builder
 </span></span><span style=display:flex><span>    builder.<span style=color:#00a000>Grow</span>(n <span style=color:#666>*</span> <span style=color:#a2f>len</span>(str))
 </span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>for</span> i <span style=color:#666>:=</span><span style=color:#666>0</span>; i &lt; n; i<span style=color:#666>++</span> {
