@@ -1,4 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>20220404</title><url>https://i.animeii.tech/todo/20220404/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> GPM模型，垃圾回收 数据库相关 web应用流程 网络编程 算法与数据结构 代码组织模式 怎样规划 怎样实施 项目</content></entry><entry><title>go语言高性能编程</title><url>https://i.animeii.tech/post/high_performance/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> go高性能编程相关。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>一致性hash算法</title><url>https://i.animeii.tech/post/consisitenthash/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 一致性hash算法是单节点走向分布式节点的一个重要环节。
+什么是一直性哈希算法呢？为什么要使用一致性哈希算法？这和分布式有什么关系？
+我该访问谁？
+对于分布式缓存来说，当一个节点接收到请求，如果该节点并没有存储缓存值，那么它面临的难题是，从谁那获得数据？ 假设有多个节点，我们用随机选取的方式来决定。那么有很大概率第二次获取相同数据时会访问到其他节点，这将导致我们需要重新从数据源获取数据存储到当前节点。这样一是效率低，二是各个节点存储着相同数据，浪费了大量的存储空间。
+那么有什么方法使得相同的key每次都访问到同一节点呢？用hash算法可以做到。我们把key的字符转换成ascii码，再与节点数求余，就可以解决随机算法中，相同key选择不同节点的状况。
+节点数量变化了怎么办？
+上面的hash算法面临一个问题：当节点节点变化时，所有之前的缓存将全部失效。节点接收到对应请求是，均需要重新去数据源获取数据，将可能发生缓存雪崩。
+缓存雪崩：缓存在同一时刻全部失效，造成瞬间DB请求量大、压力骤增，引起雪崩。常因为缓存服务器宕机，或缓存设置了相同的过期时间引起。
+那么如何解决这个问题呢？这就需要一致性hash算法了。
+算法原理</content></entry><entry><title>20220404</title><url>https://i.animeii.tech/todo/20220404/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> GPM模型，垃圾回收 数据库相关 web应用流程 网络编程 算法与数据结构 代码组织模式 怎样规划 怎样实施 项目</content></entry><entry><title>go语言高性能编程</title><url>https://i.animeii.tech/post/high_performance/</url><categories><category>后端</category></categories><tags><tag>go</tag></tags><content type="html"> go高性能编程相关。
 字符串拼接性能及原理 字符串高效拼接
 在go语言中，字符串是不可变的，拼接字符串事实上是创建了一个新的字符串对象。如果存在大量的字符串拼接，对性能产生严重的影响。
 1.常见的拼接方式
