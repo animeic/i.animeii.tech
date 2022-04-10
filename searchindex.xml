@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>一致性hash算法</title><url>https://i.animeii.tech/post/consisitenthash/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 一致性hash算法是单节点走向分布式节点的一个重要环节。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>一致性hash算法</title><url>https://i.animeii.tech/post/consisitenthash/</url><categories><category>后端</category><category>tech</category></categories><tags><tag>go</tag></tags><content type="html"> 一致性hash算法是单节点走向分布式节点的一个重要环节。
 什么是一直性哈希算法呢？为什么要使用一致性哈希算法？这和分布式有什么关系？
 我该访问谁？
 对于分布式缓存来说，当一个节点接收到请求，如果该节点并没有存储缓存值，那么它面临的难题是，从谁那获得数据？ 假设有多个节点，我们用随机选取的方式来决定。那么有很大概率第二次获取相同数据时会访问到其他节点，这将导致我们需要重新从数据源获取数据存储到当前节点。这样一是效率低，二是各个节点存储着相同数据，浪费了大量的存储空间。
