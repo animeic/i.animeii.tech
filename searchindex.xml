@@ -29,9 +29,8 @@ M:N
 协程跟线程是有区别的。线程由CPU调度是抢占式的，协程由用户态调度是协作式的，一个协程让出CPU后，才执行下一个协程。
 GO的协程gorotine
 go为了提供更容易使用的并发方法，goroutine和channel。goroutine来自协程的概念，让一组可复用的函数运行在一组线程上，即使有协程阻塞，该线程的其他协程也可以被runtime调度，转移到其他可运行的线程上。
-goroutine非常轻量，只占几KB，并且足够goroutine运行完，这就能在有限的内存空间内支持大量goroutine，支持更多的并发。goroutine栈可伸缩，runtime会自动为goroutine分配。
-特点：
-占用内存更小 调度更灵活 goroutine调度器的GMP模型的设计思想 G: goroutine协程
+goroutine非常轻量，只占几KB，并且足够goroutine运行完，这就能在有限的内存空间内支持大量goroutine，支持更多的并发。goroutine栈可伸缩，runtime会自动为goroutine分配。占用内存更小,调度更灵活。
+goroutine调度器的GMP模型的设计思想 G: goroutine协程
 P: processor 处理器，包含运行goroutine的资源，如果线程想运行goroutine，必须先获取P，P中还包含了可运行的G队列。
 M：thread线程
 GMP模型
@@ -40,7 +39,8 @@ GMP模型
 goroutine调度器和os调度器是通过M结合起来的，每个M都代表了1个内核线程，os调度器负责把内核线程分配到CPU的核上执行。 有关P和M的个数问题
 M与P的数量没有绝对关系，一个M阻塞，P就会去创建或者切换另一个M，所有，即使P默认数量是1，也有可能会创建很多个M出来。
 P的数量：由启动时的环境变量GOMAXPROCS或者由runtime的方法GOMAXPROCS()决定。 M的数量：go默认最大为10000；runtime/debug中的SetMaxThreads函数设置M的最大数量；一个M阻塞了，会创建新的M。 P和M何时会被创建
-P何时创建：在确定了P的最大数量n后，运行时系统会根据这个数量创建n个P。 M何时创建：没有足够的M来关联P并运行其中的可运行的G。比如所有的M此时都阻塞了，而P中还有很多就绪任务，就会去寻找空闲的M，如果没有空闲的，就会去创建新的M。 调度器的设计策略 // 格式要求：1.要有良好的层次，换行必须2个空格。 // 标题，有序列表，无序列表，引用，加粗。代码块，图片链接</content></entry><entry><title>lru缓存淘汰策略</title><url>https://i.animeii.tech/post/lru/</url><categories><category>后端</category><category>tech</category></categories><tags><tag>go</tag></tags><content type="html"> 缓存淘汰算法：FIFO、LFU和LRU。 FIFO:先进先出，淘汰最早的数据。 LFU：最少使用，淘汰缓存中访问频率最低的。 LRU：最近最少使用。
+P何时创建：在确定了P的最大数量n后，运行时系统会根据这个数量创建n个P。 M何时创建：没有足够的M来关联P并运行其中的可运行的G。比如所有的M此时都阻塞了，而P中还有很多就绪任务，就会去寻找空闲的M，如果没有空闲的，就会去创建新的M。 调度器的设计策略
+// 格式要求：1.要有良好的层次，换行必须2个空格。 // 标题，有序列表，无序列表，引用，加粗。代码块，图片链接</content></entry><entry><title>lru缓存淘汰策略</title><url>https://i.animeii.tech/post/lru/</url><categories><category>后端</category><category>tech</category></categories><tags><tag>go</tag></tags><content type="html"> 缓存淘汰算法：FIFO、LFU和LRU。 FIFO:先进先出，淘汰最早的数据。 LFU：最少使用，淘汰缓存中访问频率最低的。 LRU：最近最少使用。
 LRU(Least Recently Used)最近最少使用，相对于仅考虑时间因素的FIFO和仅考虑访问频率的LFU，LRU算法可以认为是相对平衡的一种淘汰算法。LRU认为，如果数据最近被访问过，那么将来被访问的概率也会更高。
 LRU算法实现 维护一个队列，如果某条记录被访问了，则移到队尾，那么队首则是最近最少访问的数据，淘汰该条记录即可。
 LRU实现的核心数据结构：map、双向链表。 绿色的是map,存储键和值的映射关系。 红色的是双向链表实现的队列。将所有值放到双向链表中，当访问到某个值时，将其移动到队尾的复杂度是O(1)，在队尾新增一条记录以及删除一条记录的复杂度均为O(1)。 package lru import "container/list" type Cache struct{ // 允许使用的最大内存 maxBytes int64 // 当前已使用内存 nbytes int64 ll *list.List cache map[string]*list.Element // 某条记录被移除时的回调函数 OnEvicted func(key string, value Value) } // 双向链表的数据类型 type entry struct{ key string value Value } type Value interface{ // 占用的内存大小 Len() int } // 实例化Cache func New(maxBytes int64,onEvicted func(string,Value)) *Cache { return &amp;Cache{ maxBytes: maxBytes, ll: list.New(), cache: make(map[string]*list.Element), OnEvicted: onEvicted, } } // 查找功能 func (c *Cache) Get(key string) (value Value,ok bool){ // 如果缓存存在 if ele,ok := c.cache[key];ok{ // 节点移到队列前 c.ll.MoveToFront(ele) // 获取缓存 kv := ele.Value.(*entry) // 返回对应的缓存 return kv.value,true } return } // 淘汰缓存 func (c *Cache) RemoveOldest(){ // 取得队尾节点。从链表中移除 ele := c.ll.Back() if ele != nil{ c.ll.Remove(ele) kv := ele.Value.(*entry) // 从cache中移除 delete(c.cache,kv.key) // 归还可用空间 c.nbytes -= int64(len(kv.key)) + int64(kv.value.len()) // 如果回调存在则调用 if c.OnEvicted != nil{ c.OnEvicted(kv.key,kv.value) } } } // 新增、修改 func (c *Cache) Add(key string, value Value){ // 存在时为修改 if ele,ok := c.cache[key];ok{ // 将对应节点移到队首 c.ll.MoveToFront(ele) kv := ele.Value.(*entry) c.nbytes += int64(value.Len()) - int64(kv.value.Len()) kv.value = value }else{ // 新增 在队首添加节点 ele := c.ll.PushFront(&amp;entry{key,value}) c.cache[key] = ele // 更新已用缓存 c.nbytes += int64(len(key)) + int64(value.Len()) } // 当最大缓存容量小于可用容量时移除缓存 for c.maxBytes != 0 &amp;&amp; c.maxBytes &lt; c.nbytes{ c.RemoveOldest() } } // 获取列表长度 func (c *Cache) Len() int { return c.ll.Len() }</content></entry><entry><title>使用ubuntu替代windows</title><url>https://i.animeii.tech/post/why_work_on_linux/</url><categories><category>便捷工具</category></categories><tags><tag>ubuntu</tag></tags><content type="html"> 作为大众使用windows可能是个不错的选择。windows生态非常好，使用简单方便。不过随着linux桌面版的不断发展，也许linux也是一个不错的选择。
