@@ -1,4 +1,44 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>lru缓存淘汰策略</title><url>https://i.animeii.tech/post/lru/</url><categories><category>后端</category><category>tech</category></categories><tags><tag>go</tag></tags><content type="html"> 缓存淘汰算法：FIFO、LFU和LRU。 FIFO:先进先出，淘汰最早的数据。 LFU：最少使用，淘汰缓存中访问频率最低的。 LRU：最近最少使用。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>协程调度原理及GMP模型</title><url>https://i.animeii.tech/post/go_xxx_gmp/</url><categories><category>后端</category><category>tech</category></categories><tags><tag>go</tag></tags><content type="html"> go调度器轻量且简单，足以支撑起goroutine的调度工作，并且go具有原生强大的并发能力。go调度本质是把大量的goroutine分配到少量线程去执行，并利用多核并行，实现更强大的并发。
+golang调度器的由来 单进程时代不需要调度器
+一切的软件都是跑在操作系统上，真正用来计算的是CPU。早期操作系统每个程序就是一个进程，知道一个程序运行完，才能进行下一个进程。一切的程序只能串行发生。
+单进程操作系统面临的问题：
+单一的执行流程，计算机只能一个任务一个任务处理。 进程阻塞带来的CPU时间浪费。 那么能不能有多个进程来宏观一起执行多个任务呢？ 多进程/线程时代有了调度器的需求 在多进程/多线程的操作系统中，就解决了阻塞的问题，如果一个进程阻塞CPU那么可以立刻切换到其他进程中去执行，而且调度CPU的算法可以保证在运行的进程都可以被分配到CPU的运行时间片。这样从宏观上来看，似乎多个进程在同时被运行。
+但新的问题又出现了，进程拥有太多的资源，进程的创建、切换、销毁，都会占用很长的时间，CPU虽然利用起来了，但如果进程过多，CPU有很大一部分都被用来进行进程的调度了。
+怎么才能提高CPU的利用率呢？
+对于linux系统来说，CPU对进程的态度和线程的态度是一样的。
+CPU调度切换的是进程和线程，尽管线程看起来很美好，但实际上多线程开发设计会变得更加复杂，要考虑很多同步竞争等问题，如锁、竞争冲突等。
+协程来提高CPU利用率 多进程、多线程已经提高了系统的并发能力，但是在当今互联网高并发场景下，为每个任务都创建一个线程是不现实的，因为会消耗大量的内存(进程虚拟内存会占用4G，而线程也要大约4MB)。
+大量的进程/线程出现了新的问题：
+高内存占用 调度的高消耗CPU 如何解决这个问题呢？其实线程分为内核态和用户态线程。
+一个用户态线程必须要绑定一个内核态线程，但是CPU并不知道用户态线程的存在，它只知道运行的是一个内核态线程(Linux 的PCB进程控制块)。
+这样，我们把内核线程叫线程(thread),用户线程叫作协程。
+协程与线程的映射关系：
+N:1
+优点：
+协程在用户态线程即完成切换，不会陷入内核态，这种切换非常轻量快速。
+缺点:
+每个程序用不了硬件的多核加速能力 一旦某个协程阻塞，造成线程阻塞，本进程的其他协程都无法执行了，根本没有并发能力。 1:1
+优点：
+最容易实现，协程的调度都由CPU完成。
+缺点： 协程的创建、删除和切换的代价都由CPU完成。
+M:N
+克服了上面两种模型的缺点，实现起来复杂。
+协程跟线程是有区别的。线程由CPU调度是抢占式的，协程由用户态调度是协作式的，一个协程让出CPU后，才执行下一个协程。
+4. GO的协程gorotine
+go为了提供更容易使用的并发方法，goroutine和channel。goroutine来自协程的概念，让一组可复用的函数运行在一组线程上，即使有协程阻塞，该线程的其他协程也可以被runtime调度，转移到其他可运行的线程上。
+goroutine非常轻量，只占几KB，并且足够goroutine运行完，这就能在有限的内存空间内支持大量goroutine，支持更多的并发。goroutine栈可伸缩，runtime会自动为goroutine分配。
+特点：
+占用内存更小 调度更灵活 goroutine调度器的GMP模型的设计思想 go中GMP对应解释：
+G: goroutine协程
+P: processor 处理器，包含运行goroutine的资源，如果线程想运行goroutine，必须先获取P，P中还包含了可运行的G队列。
+M：thread线程
+GMP模型 在go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
+全局队列：存放等待运行的G。 P的本地队列：存放等待运行的G，数量不超过256个，新建G&rsquo;时，G&rsquo;优先加入到P的本地队列，如果队列满了，则会把本地队列中的一半G移动到全局队列。 P列表：所有P都是在程序启动时创建，并保存在数组中，最多有GOMAXPROCS(可配置)个。 M：线程想要运行任务就得获取P，从P的本地队列获取G，P队列为空时，M也会尝试从全局队列拿一批G放到P的本地队列，或从其他P的本地队列偷一半放在自己P的本地队列。M运行G，G执行之后，M会从P获取下一个G，不断重复下去。
+goroutine调度器和os调度器是通过M结合起来的，每个M都代表了1个内核线程，os调度器负责把内核线程分配到CPU的核上执行。 有关P和M的个数问题
+P的数量：由启动时的环境变量GOMAXPROCS或者由runtime的方法GOMAXPROCS()决定。 M的数量：go默认最大为10000；runtime/debug中的SetMaxThreads函数设置M的最大数量；一个M阻塞了，会创建新的M。 M与P的数量没有绝对关系，一个M阻塞，P就会去创建或者切换另一个M，所有，即使P默认数量是1，也有可能会创建很多个M出来。 P和M何时会被创建
+P何时创建：在确定了P的最大数量n后，运行时系统会根据这个数量创建n个P。
+M何时创建：没有足够的M来关联P并运行其中的可运行的G。比如所有的M此时都阻塞了，而P中还有很多就绪任务，就会去寻找空闲的M，如果没有空闲的，就会去创建新的M。
+调度器的设计策略</content></entry><entry><title>lru缓存淘汰策略</title><url>https://i.animeii.tech/post/lru/</url><categories><category>后端</category><category>tech</category></categories><tags><tag>go</tag></tags><content type="html"> 缓存淘汰算法：FIFO、LFU和LRU。 FIFO:先进先出，淘汰最早的数据。 LFU：最少使用，淘汰缓存中访问频率最低的。 LRU：最近最少使用。
 LRU(Least Recently Used)最近最少使用，相对于仅考虑时间因素的FIFO和仅考虑访问频率的LFU，LRU算法可以认为是相对平衡的一种淘汰算法。LRU认为，如果数据最近被访问过，那么将来被访问的概率也会更高。
 LRU算法实现 维护一个队列，如果某条记录被访问了，则移到队尾，那么队首则是最近最少访问的数据，淘汰该条记录即可。
 LRU实现的核心数据结构：map、双向链表。 绿色的是map,存储键和值的映射关系。 红色的是双向链表实现的队列。将所有值放到双向链表中，当访问到某个值时，将其移动到队尾的复杂度是O(1)，在队尾新增一条记录以及删除一条记录的复杂度均为O(1)。 package lru import "container/list" type Cache struct{ // 允许使用的最大内存 maxBytes int64 // 当前已使用内存 nbytes int64 ll *list.List cache map[string]*list.Element // 某条记录被移除时的回调函数 OnEvicted func(key string, value Value) } // 双向链表的数据类型 type entry struct{ key string value Value } type Value interface{ // 占用的内存大小 Len() int } // 实例化Cache func New(maxBytes int64,onEvicted func(string,Value)) *Cache { return &amp;Cache{ maxBytes: maxBytes, ll: list.New(), cache: make(map[string]*list.Element), OnEvicted: onEvicted, } } // 查找功能 func (c *Cache) Get(key string) (value Value,ok bool){ // 如果缓存存在 if ele,ok := c.cache[key];ok{ // 节点移到队列前 c.ll.MoveToFront(ele) // 获取缓存 kv := ele.Value.(*entry) // 返回对应的缓存 return kv.value,true } return } // 淘汰缓存 func (c *Cache) RemoveOldest(){ // 取得队尾节点。从链表中移除 ele := c.ll.Back() if ele != nil{ c.ll.Remove(ele) kv := ele.Value.(*entry) // 从cache中移除 delete(c.cache,kv.key) // 归还可用空间 c.nbytes -= int64(len(kv.key)) + int64(kv.value.len()) // 如果回调存在则调用 if c.OnEvicted != nil{ c.OnEvicted(kv.key,kv.value) } } } // 新增、修改 func (c *Cache) Add(key string, value Value){ // 存在时为修改 if ele,ok := c.cache[key];ok{ // 将对应节点移到队首 c.ll.MoveToFront(ele) kv := ele.Value.(*entry) c.nbytes += int64(value.Len()) - int64(kv.value.Len()) kv.value = value }else{ // 新增 在队首添加节点 ele := c.ll.PushFront(&amp;entry{key,value}) c.cache[key] = ele // 更新已用缓存 c.nbytes += int64(len(key)) + int64(value.Len()) } // 当最大缓存容量小于可用容量时移除缓存 for c.maxBytes != 0 &amp;&amp; c.maxBytes &lt; c.nbytes{ c.RemoveOldest() } } // 获取列表长度 func (c *Cache) Len() int { return c.ll.Len() }</content></entry><entry><title>使用ubuntu替代windows</title><url>https://i.animeii.tech/post/why_work_on_linux/</url><categories><category>便捷工具</category></categories><tags><tag>ubuntu</tag></tags><content type="html"> 作为大众使用windows可能是个不错的选择。windows生态非常好，使用简单方便。不过随着linux桌面版的不断发展，也许linux也是一个不错的选择。
