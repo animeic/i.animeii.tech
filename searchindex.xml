@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>03</title><url>https://i.animeii.tech/daily/202206/03/</url><categories><category>hugo</category><category>tech</category></categories><tags><tag>bolg</tag></tags><content type="html"> 这里是文章概述。。。
-1. 数据结构与算法
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>2022年6月4日</title><url>https://i.animeii.tech/daily/202206/04/</url><categories><category/><category/></categories><tags><tag/></tags><content type="html"/></entry><entry><title>2020年6月03日</title><url>https://i.animeii.tech/daily/202206/03/</url><categories><category/><category/></categories><tags><tag/></tags><content type="html"> 1. 数据结构与算法
 2. 设计模式
 3. go标准库
 4. 练习项目
@@ -88,7 +87,8 @@ cost:4h
 俯卧撑20
 仰卧起坐200
 地板撑2分钟
-下蹲50</content></entry><entry><title>学习计划</title><url>https://i.animeii.tech/daily/learn/</url><categories><category/><category/></categories><tags><tag/></tags><content type="html"> 学习计划
+下蹲50
+6-7：总结昨日(粗略)、计划今日(详细) 7-8：运动、早餐 8-11：数据结构、算法、设计模式 11-12：go标准库 4h 12-13: 休息、午餐 - 13-18：基础提高、练习项目、实践项目 18-19：自由分配时间 6h 19-20：晚餐、休息 20-21：总结今日(详细)、计划明日(粗略) 21-22：无氧运动、洗漱</content></entry><entry><title>学习计划</title><url>https://i.animeii.tech/daily/learn/</url><categories><category/><category/></categories><tags><tag/></tags><content type="html"> 学习计划
 学习计划 原则： 目标：
 数据结构、算法、设计模式 数据结构：数组、链表、队列、栈、散列表、b+tree、tire tree
 算法：复杂度分析、排序、一致性hash、算法思想
@@ -107,10 +107,9 @@ uml图：
 标准库、语法、基本原理 练习项目、实践项目 上线实践项目 形成文档 能梳理出开发流程、模式 需要注意 注意：不要完美主义，注意时间和功能。
 学习方式：确定主题、深入具体、弄清楚流程、自己实现。
 例如：如何高效率拼接字符串？
-有哪些字符串拼接方式？ 这些方式的优缺点？ 最佳选择？</content></entry><entry><title>目录</title><url>https://i.animeii.tech/daily/index1/</url><categories><category/><category/></categories><tags><tag/></tags><content type="html"> 目录
-目录 分类计划 生活
+有哪些字符串拼接方式？ 这些方式的优缺点？ 最佳选择？</content></entry><entry><title>目录</title><url>https://i.animeii.tech/daily/index1/</url><categories><category/><category/></categories><tags><tag/></tags><content type="html"> 分类计划 生活
 学习
-每日 【T】2022年5月17日</content></entry><entry><title>短期计划</title><url>https://i.animeii.tech/daily/plan/</url><categories><category/><category/></categories><tags><tag/></tags><content type="html"> 短期计划
+每日 【T】2022年6月3日</content></entry><entry><title>短期计划</title><url>https://i.animeii.tech/daily/plan/</url><categories><category/><category/></categories><tags><tag/></tags><content type="html"> 短期计划
 复工准备 因自律而自由
 原则：用计划代替临时决策，避免频繁决策浪费意志力
 目标：高效达成生活、学习目标
